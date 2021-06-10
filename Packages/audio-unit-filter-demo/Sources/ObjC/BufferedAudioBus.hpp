@@ -92,7 +92,7 @@ struct BufferedInputBus : BufferedAudioBus {
                                 AVAudioFrameCount frameCount,
                                 NSInteger inputBusNumber,
                                 AURenderPullInputBlock pullInputBlock) {
-        if (pullInputBlock == nullptr) {
+        if (pullInputBlock == nil/*nullptr*/) {
             return kAudioUnitErr_NoConnection;
         }
         

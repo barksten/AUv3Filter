@@ -5,11 +5,17 @@ Abstract:
 Main AU interface that enables user to visually configure the frequency and resonance parameters.
 */
 
-public let defaultMinHertz: Float = 12.0
-public let defaultMaxHertz: Float = 20_000.0
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
+
+let defaultMinHertz: Float = 12.0
+let defaultMaxHertz: Float = 20_000.0
 
 /// Delegate protocol used to communicate changes to frequency and resonance.
-protocol FilterViewDelegate: class {
+public protocol FilterViewDelegate: AnyObject {
     func filterViewTouchBegan(_ filterView: FilterView)
     func filterView(_ filterView: FilterView, didChangeResonance resonance: Float)
     func filterView(_ filterView: FilterView, didChangeFrequency frequency: Float)
@@ -44,7 +50,7 @@ extension Color {
     }
 }
 
-class FilterView: View {
+public class FilterView: View {
 
     // MARK: Properties
 
@@ -91,7 +97,7 @@ class FilterView: View {
     }()
 
     // The delegate to notify of paramater and size changes.
-    weak var delegate: FilterViewDelegate?
+    public weak var delegate: FilterViewDelegate?
 
     var editPoint = CGPoint.zero
     var touchDown = false
@@ -113,7 +119,7 @@ class FilterView: View {
     }
 
     // The cutoff frequency.
-    var frequency: Float = defaultMinHertz {
+    public var frequency: Float = defaultMinHertz {
         didSet {
             frequency = frequency.clamp(to: defaultMinHertz...defaultMaxHertz)
 
@@ -124,7 +130,7 @@ class FilterView: View {
     }
 
     // The narrow band of the cutoff frequency to boost or attenuate.
-    var resonance: Float = 0.0 {
+    public var resonance: Float = 0.0 {
         didSet {
             // Clamp the resonance to min/max values.
             let gain = Float(defaultGain)
@@ -153,7 +159,7 @@ class FilterView: View {
      Prepares an array of frequencies that the AU needs to supply magnitudes for.
      This array is cached until the view size changes (on device rotation, etc).
      */
-    func frequencyDataForDrawing() -> [Double] {
+    public func frequencyDataForDrawing() -> [Double] {
         guard frequencies == nil else { return frequencies! }
 
         let width = graphLayer.bounds.width
@@ -190,7 +196,7 @@ class FilterView: View {
      Generates a bezier path from the frequency response curve data provided by
      the view controller. Also responsible for keeping the control point in sync.
      */
-    func setMagnitudes(_ magnitudeData: [Double]) {
+    public func setMagnitudes(_ magnitudeData: [Double]) {
 
         let bezierPath = CGMutablePath()
         let width = graphLayer.bounds.width
@@ -295,7 +301,7 @@ class FilterView: View {
     }
 
     #if os(macOS)
-    override var isFlipped: Bool { return true }
+    public override var isFlipped: Bool { return true }
     #endif
 
     private func newLayer(of size: CGSize) -> CALayer {
@@ -306,7 +312,7 @@ class FilterView: View {
         return layer
     }
 
-    override func awakeFromNib() {
+    public override func awakeFromNib() {
         super.awakeFromNib()
 
         // Create all of the CALayers for the graph, lines, and labels.
@@ -358,7 +364,7 @@ class FilterView: View {
     }
     
     #if os(macOS)
-    override func setFrameSize(_ newSize: NSSize) {
+    public override func setFrameSize(_ newSize: NSSize) {
         super.setFrameSize(newSize)
         layoutSublayers(of: rootLayer)
     }
@@ -597,7 +603,7 @@ class FilterView: View {
      and the view needs to re-layout for the new view size.
      */
     #if os(iOS)
-    override func layoutSublayers(of layer: CALayer) {
+    public override func layoutSublayers(of layer: CALayer) {
         performLayout(of: layer)
     }
     #elseif os(macOS)
@@ -676,7 +682,7 @@ class FilterView: View {
     #if os(iOS)
 
     // MARK: Touch Event Handling
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard var pointOfTouch = touches.first?.location(in: self) else { return }
 
         pointOfTouch = CGPoint(x: pointOfTouch.x, y: pointOfTouch.y + bottomMargin)
@@ -689,7 +695,7 @@ class FilterView: View {
         }
     }
 
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+    public override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard var pointOfTouch = touches.first?.location(in: self) else { return }
 
         pointOfTouch = CGPoint(x: pointOfTouch.x, y: pointOfTouch.y + bottomMargin)
@@ -701,7 +707,7 @@ class FilterView: View {
         }
     }
 
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard var pointOfTouch = touches.first?.location(in: self) else { return }
 
         pointOfTouch = CGPoint(x: pointOfTouch.x, y: pointOfTouch.y + bottomMargin)
@@ -716,13 +722,13 @@ class FilterView: View {
         delegate?.filterViewTouchEnded(self)
     }
 
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+    public override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         touchDown = false
     }
 
     #elseif os(macOS)
     // MARK: Mouse Event Handling
-    override func mouseDown(with event: NSEvent) {
+    public override func mouseDown(with event: NSEvent) {
 
         let pointOfTouch = NSPointToCGPoint(convert(event.locationInWindow, from: nil))
         let convertedPoint = rootLayer.convert(pointOfTouch, to: graphLayer)
@@ -737,7 +743,7 @@ class FilterView: View {
         }
     }
 
-    override func mouseDragged(with event: NSEvent) {
+    public override func mouseDragged(with event: NSEvent) {
 
         let pointOfClick = NSPointToCGPoint(convert(event.locationInWindow, from: nil))
         let convertedPoint = rootLayer.convert(pointOfClick, to: graphLayer)
@@ -749,7 +755,7 @@ class FilterView: View {
         }
     }
 
-    override func mouseUp(with event: NSEvent) {
+    public override func mouseUp(with event: NSEvent) {
         touchDown = false
         updateControls(refreshColor: true)
         delegate?.filterViewTouchEnded(self)

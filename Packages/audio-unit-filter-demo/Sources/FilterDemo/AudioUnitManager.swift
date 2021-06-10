@@ -9,6 +9,14 @@ import Foundation
 import AudioToolbox
 import CoreAudioKit
 import AVFoundation
+import FilterView
+import SimplePlayEngine
+
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
 
 // A simple wrapper type to prevent exposing the Core Audio AUAudioUnitPreset in the UI layer.
 public struct Preset {
@@ -20,6 +28,8 @@ public struct Preset {
     public var name: String { return audioUnitPreset.name }
 }
 
+
+//TODO: Byt ut mot publisher eller effect
 // Delegate protocol to be adopted to be notified of parameter value changes.
 public protocol AUManagerDelegate: AnyObject {
     func cutoffValueDidChange(_ value: Float)

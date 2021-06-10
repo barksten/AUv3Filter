@@ -5,12 +5,12 @@ Abstract:
 The app's delegate object.
 */
 
-import UIKit
-
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
-    var window: UIWindow?
-
-}
+//import UIKit
+//
+//@UIApplicationMain
+//class AppDelegate: UIResponder, UIApplicationDelegate {
+//
+//    var window: UIWindow?
+//
+//}
 

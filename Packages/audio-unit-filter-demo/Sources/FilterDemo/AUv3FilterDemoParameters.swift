@@ -6,6 +6,9 @@ The object managing the filter's cutoff and resonance parameters.
 */
 
 import Foundation
+import AVFoundation
+import AudioUnit
+import FilterView
 
 /// Manages the AUv3Filter object's cutoff and resonance parameters.
 class AUv3FilterDemoParameters {

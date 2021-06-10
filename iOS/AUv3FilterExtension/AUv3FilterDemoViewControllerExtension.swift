@@ -6,7 +6,7 @@ AUv3FilterDemoViewController is the app extension's principal class, responsible
 */
 
 import CoreAudioKit
-import AUv3FilterFramework
+import FilterDemo
 
 extension AUv3FilterDemoViewController: AUAudioUnitFactory {
 

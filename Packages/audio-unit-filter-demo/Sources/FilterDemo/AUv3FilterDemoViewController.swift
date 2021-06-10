@@ -6,6 +6,7 @@ View controller for the AUv3FilterDemo audio unit. Manages the interactions betw
 */
 
 import CoreAudioKit
+import FilterView
 
 public class AUv3FilterDemoViewController: AUViewController {
 
@@ -27,13 +28,13 @@ public class AUv3FilterDemoViewController: AUViewController {
 
     var needsConnection = true
 
-    @IBOutlet var expandedView: View! {
+    @IBOutlet var expandedView: UIView! {
         didSet {
             expandedView.setBorder(color: .black, width: 1)
         }
     }
 
-    @IBOutlet var compactView: View! {
+    @IBOutlet var compactView: UIView! {
         didSet {
             compactView.setBorder(color: .black, width: 1)
         }
@@ -236,7 +237,7 @@ extension AUv3FilterDemoViewController: FilterViewDelegate {
         filterView.setMagnitudes(magnitudes)
     }
 
-    func filterViewTouchBegan(_ filterView: FilterView) {
+    public func filterViewTouchBegan(_ filterView: FilterView) {
         resonanceParameter.setValue(filterView.resonance,
                                     originator: parameterObserverToken,
                                     atHostTime: 0,
@@ -248,7 +249,7 @@ extension AUv3FilterDemoViewController: FilterViewDelegate {
                                     eventType: .touch)
     }
     
-    func filterView(_ filterView: FilterView, didChangeResonance resonance: Float) {
+    public func filterView(_ filterView: FilterView, didChangeResonance resonance: Float) {
         resonanceParameter.setValue(resonance,
                                     originator: parameterObserverToken,
                                     atHostTime: 0,
@@ -256,7 +257,7 @@ extension AUv3FilterDemoViewController: FilterViewDelegate {
         updateFilterViewFrequencyAndMagnitudes()
     }
 
-    func filterView(_ filterView: FilterView, didChangeFrequency frequency: Float) {
+    public func filterView(_ filterView: FilterView, didChangeFrequency frequency: Float) {
         cutoffParameter.setValue(frequency,
                                  originator: parameterObserverToken,
                                  atHostTime: 0,
@@ -264,7 +265,7 @@ extension AUv3FilterDemoViewController: FilterViewDelegate {
         updateFilterViewFrequencyAndMagnitudes()
     }
 
-    func filterView(_ filterView: FilterView, didChangeFrequency frequency: Float, andResonance resonance: Float) {
+    public func filterView(_ filterView: FilterView, didChangeFrequency frequency: Float, andResonance resonance: Float) {
         
          resonanceParameter.setValue(resonance,
                                     originator: parameterObserverToken,
@@ -279,7 +280,7 @@ extension AUv3FilterDemoViewController: FilterViewDelegate {
         updateFilterViewFrequencyAndMagnitudes()
     }
 
-    func filterViewTouchEnded(_ filterView: FilterView) {
+    public func filterViewTouchEnded(_ filterView: FilterView) {
         resonanceParameter.setValue(filterView.resonance,
                                     originator: nil,
                                     atHostTime: 0,
@@ -291,7 +292,7 @@ extension AUv3FilterDemoViewController: FilterViewDelegate {
                                     eventType: .release)
     }
     
-    func filterViewDataDidChange(_ filterView: FilterView) {
+    public func filterViewDataDidChange(_ filterView: FilterView) {
         updateFilterViewFrequencyAndMagnitudes()
     }
 }

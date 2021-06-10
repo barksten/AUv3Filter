@@ -5,6 +5,12 @@ Abstract:
 Small extensions to simplify view handling in the demo app.
 */
 
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
+
 public extension View {
     func pinToSuperviewEdges() {
         guard let superview = superview else { return }
